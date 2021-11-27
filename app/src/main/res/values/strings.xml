@@ -1,0 +1,16 @@
+<resources>
+  <string name="app_name">Context</string>
+  <string name="toast_location_permission">Cannot run without LOCATION permission granted.</string>
+
+  <string name="activity_in_vehicle">In vehicle</string>
+  <string name="activity_on_bicycle">On bicycle</string>
+  <string name="activity_on_foot">On foot</string>
+  <string name="activity_running">Running</string>
+  <string name="activity_walking">Walking</string>
+  <string name="activity_tilting">Tilting</string>
+  <string name="activity_still">Still</string>
+  <string name="activity_unknown">Unknown</string>
+  <string name="activity_title">Activity</string>
+    <string name="toast_activity_permission">Activity permission not granted</string>
+
+</resources>
