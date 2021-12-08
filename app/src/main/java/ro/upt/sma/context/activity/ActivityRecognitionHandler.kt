@@ -25,7 +25,7 @@ class ActivityRecognitionHandler(private val context: Context) {
         )
         client.requestActivityUpdates(113, pendingIntent)
 
-        return null!!
+        return pendingIntent
     }
 
     fun unregisterPendingIntent(pendingIntent: PendingIntent) {
