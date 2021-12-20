@@ -9,12 +9,12 @@ import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.location.Location
 import android.os.Bundle
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
-import androidx.appcompat.app.AppCompatActivity
 import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.StringRes
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import com.google.android.gms.location.DetectedActivity
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationResult
@@ -24,9 +24,10 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
-import java.text.MessageFormat
 import ro.upt.sma.context.activity.ActivityRecognitionHandler
+import ro.upt.sma.context.activity.ActivityRecognitionService
 import ro.upt.sma.context.location.LocationHandler
+import java.text.MessageFormat
 
 class ContextActivity : AppCompatActivity(), OnMapReadyCallback {
 
@@ -88,7 +89,7 @@ class ContextActivity : AppCompatActivity(), OnMapReadyCallback {
         if (isLocationPermissionGranted) {
             fMap.getMapAsync(this)
             setupLocation()
-            // setupActivityRecognition()
+            setupActivityRecognition()
         }
     }
 
@@ -111,6 +112,7 @@ class ContextActivity : AppCompatActivity(), OnMapReadyCallback {
         permissions: Array<String>,
         grantResults: IntArray
     ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         when (requestCode) {
             LOCATION_PERMISSION_REQUEST_ID -> {
                 checkAndShowToast(grantResults, R.string.toast_location_permission)
@@ -148,14 +150,21 @@ class ContextActivity : AppCompatActivity(), OnMapReadyCallback {
 
         this.activityRecognitionReceiver = object : BroadcastReceiver() {
             override fun onReceive(context: Context, intent: Intent) {
-                // TODO 6: Extract activity type from intent extras and pass it to updateActivityCard method.
+                // Extract activity type from intent extras and pass it to updateActivityCard method.
                 // Take a look at ActivityRecognitionService to see how intent extras are formed.
 
+                val activityType : String? = intent.getStringExtra("activity")
+
+                if (activityType != null) {
+                    updateActivityCard(activityType.toInt())
+                }
             }
         }
 
-        // TODO 7: Register created receiver only for ActivityRecognitionService.INTENT_ACTION.
-        registerReceiver(activityRecognitionReceiver, IntentFilter())
+        // Register created receiver only for ActivityRecognitionService.INTENT_ACTION.
+        val intentFilter = IntentFilter()
+        intentFilter.addAction(ActivityRecognitionService.INTENT_ACTION)
+        registerReceiver(activityRecognitionReceiver, intentFilter)
     }
 
     private fun updateMap(location: Location) {
